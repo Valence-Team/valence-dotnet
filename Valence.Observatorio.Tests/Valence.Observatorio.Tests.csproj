@@ -20,4 +20,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Valence.Observatorio.API\Valence.Observatorio.API.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.Application\Valence.Observatorio.Application.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.Domain\Valence.Observatorio.Domain.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.Infrastructure\Valence.Observatorio.Infrastructure.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.IoC\Valence.Observatorio.IoC.csproj" />
+  </ItemGroup>
+
 </Project>

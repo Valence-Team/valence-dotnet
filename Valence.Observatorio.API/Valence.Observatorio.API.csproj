@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,6 +9,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.33" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Valence.Observatorio.Application\Valence.Observatorio.Application.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.Domain\Valence.Observatorio.Domain.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.IoC\Valence.Observatorio.IoC.csproj" />
   </ItemGroup>
 
 </Project>

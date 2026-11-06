@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Valence.Observatorio.Application\Valence.Observatorio.Application.csproj" />
+    <ProjectReference Include="..\Valence.Observatorio.Infrastructure\Valence.Observatorio.Infrastructure.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
