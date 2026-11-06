@@ -10,6 +10,7 @@ namespace Valence.Observatorio.Domain.Entities
     public class UsuarioGestorEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
