@@ -480,3 +480,21 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Ferramentas locais
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+.mcp.json
+AGENTS.md
+contexto/
+
+# Ambiente
+.env
+.env.local
+*.env
+!.env.example
+
+# Segredos locais
+appsettings.Development.json
+appsettings.*.local.json
