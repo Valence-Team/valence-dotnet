@@ -47,6 +47,7 @@ namespace Valence.Observatorio.IoC
 
             // Casos de uso
             services.AddScoped<IAuthUseCase, AuthUseCase>();
+            services.AddScoped<IFocoUseCase, FocoUseCase>();
         }
     }
 }

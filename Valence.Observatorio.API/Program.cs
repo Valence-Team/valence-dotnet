@@ -76,6 +76,7 @@ app.UseSwaggerUI();
 // Endpoints
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapAuthEndpoints();
+app.MapPublicoEndpoints();
 
 app.Run();
 
