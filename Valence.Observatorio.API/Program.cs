@@ -1,5 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Valence.Observatorio.IoC;
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddIoC(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
