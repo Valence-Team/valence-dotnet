@@ -1,12 +1,11 @@
 ﻿using System.IO.Compression;
-using System.Text.Json.Serialization;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Valence.Observatorio.API.Endpoints;
 using Valence.Observatorio.API.Errors;
 using Valence.Observatorio.API.Extensions;
-using Valence.Observatorio.API.Filters;
+using Valence.Observatorio.API.Messaging;
 using Valence.Observatorio.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,14 +15,21 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services));
 
+// Telemetria
+var applicationInsights = builder.Configuration["ApplicationInsights:ConnectionString"] ?? string.Empty;
+
+if (!string.IsNullOrWhiteSpace(applicationInsights))
+    builder.Services.AddOpenTelemetry().UseAzureMonitor(options => options.ConnectionString = applicationInsights);
+
 // Dependências
 builder.Services.AddIoC(builder.Configuration);
 
+// Mensageria
+builder.Services.AddSingleton<RabbitMqConexao>();
+builder.Services.AddHostedService<ObservatorioConsumer>();
+
 // JSON
-builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddJsonObservatorio();
 
 // Tratamento de erros
 builder.Services.AddExceptionHandler<TratadorDeExcecoes>();
@@ -41,20 +47,14 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Le
 
 // Segurança
 builder.Services.AddAutenticacaoJwt();
+builder.Services.AddLimitesDeRequisicao();
+builder.Services.AddCorsObservatorio();
+
+// Saúde
+builder.Services.AddVerificacoesDeSaude(builder.Configuration);
 
 // Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition(AutorizacaoOperationFilter.Esquema, new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Description = "Token obtido em POST /api/auth/login. Cole apenas o token, sem a palavra Bearer."
-    });
-    options.OperationFilter<AutorizacaoOperationFilter>();
-});
+builder.Services.AddDocumentacao();
 
 var app = builder.Build();
 
@@ -67,16 +67,20 @@ app.UseStatusCodePages(async contexto =>
     await http.Response.WriteAsJsonAsync(ErroResposta.Criar(http, http.Response.StatusCode));
 });
 app.UseResponseCompression();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options => options.DocumentTitle = "Valence · Observatório Fitossanitário");
 
 // Endpoints
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapAuthEndpoints();
 app.MapPublicoEndpoints();
+app.MapBoletimEndpoints();
+app.MapVerificacoesDeSaude();
 
 app.Run();
 
