@@ -8,8 +8,10 @@ using Valence.Observatorio.Application.Interfaces;
 using Valence.Observatorio.Application.Services;
 using Valence.Observatorio.Application.UseCases;
 using Valence.Observatorio.Domain.Interfaces;
+using Valence.Observatorio.Infrastructure.Configs;
 using Valence.Observatorio.Infrastructure.Data;
 using Valence.Observatorio.Infrastructure.Data.Repositories;
+using Valence.Observatorio.Infrastructure.Services;
 
 namespace Valence.Observatorio.IoC
 {
@@ -25,7 +27,22 @@ namespace Valence.Observatorio.IoC
                 .Validate(s => s.ExpiracaoMinutos > 0, "Jwt:ExpiracaoMinutos deve ser maior que zero.")
                 .ValidateOnStart();
 
+            services.AddOptions<RateLimitSettings>()
+                .Bind(configuration.GetSection(RateLimitSettings.Secao))
+                .Validate(s => s.EhValido(), "RateLimiting: cada limite e cada janela devem ser maiores que zero.")
+                .ValidateOnStart();
+
+            services.AddOptions<IbgeSettings>()
+                .Bind(configuration.GetSection(IbgeSettings.Secao))
+                .Validate(s => Uri.TryCreate(s.BaseUrl, UriKind.Absolute, out _), "Ibge:BaseUrl deve ser uma URL absoluta.")
+                .Validate(s => s.TimeoutSegundos > 0, "Ibge:TimeoutSegundos deve ser maior que zero.")
+                .ValidateOnStart();
+
+            services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.Secao));
+            services.Configure<CorsSettings>(configuration.GetSection(CorsSettings.Secao));
+
             services.AddSingleton(TimeProvider.System);
+            services.AddMemoryCache();
 
             // Banco de dados
             services.AddDbContext<ApplicationContext>(options =>
@@ -44,10 +61,13 @@ namespace Valence.Observatorio.IoC
 
             // Serviços
             services.AddScoped<ITokenService, TokenService>();
+            services.AddSingleton<IMunicipioService, IbgeMunicipioService>();
 
             // Casos de uso
             services.AddScoped<IAuthUseCase, AuthUseCase>();
             services.AddScoped<IFocoUseCase, FocoUseCase>();
+            services.AddScoped<IEventoUseCase, EventoUseCase>();
+            services.AddScoped<IBoletimUseCase, BoletimUseCase>();
         }
     }
 }
