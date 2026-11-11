@@ -26,11 +26,11 @@ namespace Valence.Observatorio.API.Endpoints
                 .Produces<ErroDto>(StatusCodes.Status429TooManyRequests);
 
             grupo.MapGet("/me", (ClaimsPrincipal usuario) => Results.Ok(new GetUsuarioLogadoDto
-                {
-                    Id = usuario.ObterUsuarioId(),
-                    Papel = usuario.ObterPapel(),
-                    ExpiraEm = usuario.ObterExpiracao()
-                }))
+            {
+                Id = usuario.ObterUsuarioId(),
+                Papel = usuario.ObterPapel(),
+                ExpiraEm = usuario.ObterExpiracao()
+            }))
                 .RequireAuthorization()
                 .WithName("UsuarioLogado")
                 .WithSummary("Mostra o usuário dono do token enviado")
