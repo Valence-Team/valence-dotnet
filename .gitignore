@@ -498,3 +498,6 @@ contexto/
 # Segredos locais
 appsettings.Development.json
 appsettings.*.local.json
+
+# Material das aulas
+material-aula/
