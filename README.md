@@ -8,11 +8,11 @@ Repositório: https://github.com/Valence-Team/valence-dotnet
 
 ## Integrantes
 
-| Nome | RM | Papel no Valence |
+| Nome completo | RM | Papel no Valence |
 | --- | --- | --- |
-| Guilherme Macedo | 562396 | Observatório .NET (esta API) e banco de dados |
-| Henrique Martins | 563620 | API Java, app Mobile, serviço de IA e DevOps |
-| Pedro Henrique | 563405 | Qualidade, testes e compliance |
+| Guilherme Macedo Martins | 562396 | Observatório .NET (esta API) e banco de dados |
+| Henrique Martins Oliveira | 563620 | API Java, app Mobile, serviço de IA e DevOps |
+| Pedro Henrique Luiz Alves Duarte | 563405 | Qualidade, testes e compliance |
 
 ## O problema e a solução
 
@@ -463,7 +463,7 @@ A publicação no Azure App Service é feita pela disciplina de DevOps. A API j�
 - no App Service, definir `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` para o rate limiting enxergar o IP real do cliente;
 - rodar o `dotnet ef database update` uma vez antes do primeiro acesso.
 
-URL publicada: a preencher após o deploy.
+Situação: na entrega, o Observatório roda localmente (`http://localhost:5080`), com o mesmo Oracle FIAP e o mesmo RabbitMQ do CloudAMQP usados pela API Java em nuvem. A URL `https://valence-rm562396.azurewebsites.net` é da API Java, não deste serviço.
 
 ## Uso de IA generativa
 
